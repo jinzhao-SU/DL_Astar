@@ -4,8 +4,8 @@ import numpy as np
 class Preprocess:
 
     def __init__(self):
-        self.gtr = np.load("data/groundTruths_raw.npy")
-        self.tsr = np.load("data/trainingSets_raw.npy")
+        self.gtr = np.load("data/training/groundTruths_raw.npy")
+        self.tsr = np.load("data/training/trainingSets_raw.npy")
         print('raw trainingSets', self.tsr.shape)
         print('raw groundTruth: ', self.gtr.shape, '\n')
 
@@ -19,7 +19,7 @@ class Preprocess:
                 break
         print(dgtr.shape)
         print(np.sum(self.tsr[:,-1]))
-        np.save('data/groundTruths_density.npy', dgtr)
+        np.save('data/training/groundTruths_density.npy', dgtr)
         self.gtr = self.gtr[:,:-1]
         self.tsr = self.tsr[:,:-1]
         print('after split')
@@ -102,8 +102,8 @@ class Preprocess:
         print('generateDensity complete\n')
 
     def saveData(self):
-        np.save('data/trainingSets_diff.npy', self.tsr)
-        np.save('data/groundTruths_diff.npy', self.gtr)
+        np.save('data/training/trainingSets_diff.npy', self.tsr)
+        np.save('data/training/groundTruths_diff.npy', self.gtr)
         print('save complete\n')
 
     def checkGroundTruthIdentical(self):

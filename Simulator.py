@@ -91,8 +91,8 @@ if __name__ == '__main__':
     s.generate()
 
     # logging.info('Finished')
-    np.save('data/trainingSets_raw.npy', s.trainingSets)
-    np.save('data/groundTruths_raw.npy', s.groundTruths)
+    np.save('data/training/trainingSets_raw.npy', s.trainingSets)
+    np.save('data/training/groundTruths_raw.npy', s.groundTruths)
     print('total time: ', time.time() - startTimeIter)
     # logging.info('trainingSets: \n{0}'.format(s.trainingSets))
     # logging.info('groundTruths: \n{0}'.format(s.groundTruths))
