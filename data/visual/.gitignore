@@ -1,0 +1,21 @@
+# Dir #
+###################
+.venv/
+venv/
+.vscode/
+__pycache__/
+tmp/
+
+settings.json
+
+*.zip
+
+*.png
+
+test*.py
+
+log.*
+
+.DS_Store
+
+*.hdf5
