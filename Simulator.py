@@ -79,27 +79,26 @@ class Simulator:
 
         return launchingArea, destination
 
-
-
     def generate(self,):
         startTimeTotal = time.time()
         for index in range(self.iteration):
-            startTimeIter = time.time()
             logging.info('At {0} iteration'.format(index))
             grid = Grid(time=self.gridTime, row=self.row, col=self.column, blocks=self.blocks)
             grid.generateBlock()
-            for currentTime in range(self.simTime):
-                startPoints = self.choosePoints(self.startPointsNum)
-                startPositions = list(map(lambda x: (x // self.column, x % self.column), startPoints))
-                endPoints = self.choosePoints(self.endPointsNum)
-                endPositions = list(map(lambda x: (x // self.column, x % self.column), endPoints))
+            
+            startPoints = self.choosePoints(self.startPointsNum)
+            startPositions = list(map(lambda x: (x // self.column, x % self.column), startPoints))
+            endPoints = self.choosePoints(self.endPointsNum)
+            endPositions = list(map(lambda x: (x // self.column, x % self.column), endPoints))
 
-                for startRow, startCol in startPositions:
-                    #logging.info('   At start Point ({0}, {1})'.format(startRow, startCol))
-                    # set traning sets
-                    startRow = int(startRow)
-                    startCol = int(startCol)
-                    self.trainingSets[index, :-1, startRow, startCol, 1] = np.random.uniform(0, 0.3)
+            for startRow, startCol in startPositions:
+                #logging.info('   At start Point ({0}, {1})'.format(startRow, startCol))
+                # set traning sets
+                startRow = int(startRow)
+                startCol = int(startCol)
+                self.trainingSets[index, :, startRow, startCol, 1] = np.random.uniform(0, 0.5)
+
+                for currentTime in range(self.simTime):
                     # generate ground truth
                     succ = np.random.uniform(0, 1) <= self.trainingSets[index, currentTime, startRow, startCol, 1]
                     if succ:
@@ -126,20 +125,6 @@ class Simulator:
 
         logging.info('finish generate, cost {0}'.format(time.time() - startTimeTotal))
 
-    # Nomalize groundTruths, for each element, if it is less than median, assign to 0; otherwise assign to 1.
-    def statusNormalize(self):
-        medianVal = np.median(self.groundTruths[self.groundTruths != 0])
-        self.groundTruths[self.groundTruths > medianVal] = 1
-        self.groundTruths[self.groundTruths <= medianVal] = 0
-
-    # only save time after 30 seconds
-    def dataProcess(self):
-        self.statusNormalize()
-        self.trainingSets = self.trainingSets[:, :, :, :, :]
-        self.groundTruths = self.groundTruths[:, :, :, :]
-
-    def chooseTimeClip(self):
-        self.groundTruths = self.groundTruths[:, np.arange(0, self.groundTruths.shape[1], step=5), :, :, :]
 
     def choosePoints(self, pointsNum):
         return np.random.choice(self.row * self.column, pointsNum, replace=False)
