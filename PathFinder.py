@@ -17,7 +17,7 @@ class PathFinder:
 
         openSet.put(self.startNode)
         self.startNode.opened = True
-        flag = 0
+
         while not openSet.empty():
             currNode = openSet.get()
             #print("show currNode t,y,x", currNode.t, currNode.y, currNode.x)
@@ -29,19 +29,16 @@ class PathFinder:
                 self.gridInstance.reNew()
                 return generated_path
 
+
             # get neigbours of the current node
             neighbors = self.gridInstance.getNeighbors(currNode)
             for neighbor in neighbors:
                 if self.gridInstance.isClosed(neighbor) :
                     continue
 
-                if currNode.x != self.startNode.x and currNode.y != self.startNode.y:
-                    if neighbor.x != currNode.parentNode.x and neighbor.y != currNode.parentNode.y:
-                        flag = 5
-                    else :
-                        flag = 0
-                    neighbor.tCost = currNode.tCost
-                next_gCost = currNode.gCost + self.gridInstance.getDistance(currNode, neighbor) + flag
+               #get the distance
+                # print(type(neighbor))
+                next_gCost = currNode.gCost + self.gridInstance.getDistance(currNode, neighbor)
 
                 if (not self.gridInstance.isOpened(neighbor)) or (next_gCost < neighbor.gCost):
                     neighbor.gCost = next_gCost

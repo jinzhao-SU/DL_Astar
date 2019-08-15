@@ -6,7 +6,6 @@ class Node:
         self.t = t
         self.hCost = 0
         self.gCost = 0
-        self.tCost = 0
         self.parentNode = None
         # self.closed = False
         # self.opened = False
@@ -14,11 +13,7 @@ class Node:
 
     def __lt__(self, other):
         if self.fCost == other.fCost:
-            if self.gCost == other.gCost:
-                return self.hCost < other.hCost
-            if self.hCost == other.hCost:
-                return self.tCost < other.tCost
-            return self.hCost + self.tCost < other.hCost+ other.tCost
+            return self.gCost < other.gCost
         return self.fCost < other.fCost
 
     @property
@@ -40,18 +35,9 @@ class Node:
         self._gCost = value
 
     @property
-    def tCost(self):
-        #print("return hCost")
-        return self._tCost
-    @tCost.setter
-    def tCost(self, value):
-        #print("set Cost")
-        self._tCost = value
-
-    @property
     def fCost(self):
         #print("return fCost")
-        return self._gCost + self._hCost + self._tCost
+        return self._gCost + self._hCost
 
 
 
