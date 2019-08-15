@@ -4,6 +4,7 @@ import random
 from PathFinder import PathFinder
 from Grid import Grid
 from Node import Node
+from Area import Area
 import time
 
 class Simulator:
@@ -13,20 +14,10 @@ class Simulator:
         self.column = column
         self.gridTime = gridTime
         self.simTime = simTime
+        self.area = Area()
         self.startPointsNum = startPointsNum
         self.endPointsNum = endPointsNum
-        self.blocks = np.array([
-            [15, 3],
-            [16, 4],
-            [8, 8],
-            [8, 12],
-            [25, 26],
-            [23, 27],
-            [15, 15],
-            [13, 15],
-            [5, 26],
-            [18, 6],
-        ])
+        self.blocks = self.area.getBlockPoint('all')
         # In channel, 0th is status that uav is launching at this second
         # 1st is launching rate of this point
         # 2nd and 3rd is (x, y) postion of destination point
@@ -34,50 +25,6 @@ class Simulator:
         self.groundTruths = np.zeros(shape=(self.iteration, self.gridTime, self.row, self.column), dtype=np.float32)
         logging.info('finish init\n')
 
-    def generateLaunchingPoints(self):
-        launchingPoints1 = np.array([
-            [15, 0, 0],
-            [15, 2, 0],
-            [16, 0, 0],
-            [16, 2, 0],
-        ])
-
-        launchingPoints2 = np.array([
-            [7, 10, 0],
-            [7, 11, 0],
-            [8, 10, 0],
-            [8, 11, 0],
-        ])
-
-        launchingPoint3 = np.array([
-            [23, 29, 0],
-            [23, 30, 0],
-            [24, 29, 0],
-            [24, 30, 0],
-        ])
-
-        destination = np.array([
-            [30, 9],
-            [30, 10],
-            [31, 9],
-            [31, 10],
-            [7, 22],
-            [7, 25],
-            [9, 22],
-            [9, 25],
-            [30, 9],
-            [30, 10],
-            [31, 9],
-            [31, 10],
-        ])
-
-        launchingArea = np.array([launchingPoints1, launchingPoints2, launchingPoint3], dtype=np.float32)
-        for i in range(len(launchingArea)):
-            p = np.random.uniform(0.2, 0.8)
-            launchingArea[i, :, 2] = p
-        launchingArea = np.concatenate(launchingArea, axis=0)
-
-        return launchingArea, destination
 
     def generate(self,):
         startTimeTotal = time.time()
@@ -86,24 +33,24 @@ class Simulator:
             grid = Grid(time=self.gridTime, row=self.row, col=self.column, blocks=self.blocks)
             grid.generateBlock()
             
-            startPoints = self.choosePoints(self.startPointsNum)
-            startPositions = list(map(lambda x: (x // self.column, x % self.column), startPoints))
-            endPoints = self.choosePoints(self.endPointsNum)
-            endPositions = list(map(lambda x: (x // self.column, x % self.column), endPoints))
+            # startPoints = self.choosePoints(self.startPointsNum)
+            # startPositions = list(map(lambda x: (x // self.column, x % self.column), startPoints))
+            # endPoints = self.choosePoints(self.endPointsNum)
+            # endPositions = list(map(lambda x: (x // self.column, x % self.column), endPoints))
+            startPositions = self.area.getLaunchPoint(self.startPointsNum)
 
-            for startRow, startCol in startPositions:
+            for startRow, startCol, launchingRate in startPositions:
                 #logging.info('   At start Point ({0}, {1})'.format(startRow, startCol))
                 # set traning sets
                 startRow = int(startRow)
                 startCol = int(startCol)
-                self.trainingSets[index, :, startRow, startCol, 1] = np.random.uniform(0, 0.5)
+                self.trainingSets[index, :, startRow, startCol, 1] = launchingRate
 
                 for currentTime in range(self.simTime):
                     # generate ground truth
                     succ = np.random.uniform(0, 1) <= self.trainingSets[index, currentTime, startRow, startCol, 1]
                     if succ:
-                        np.random.shuffle(endPositions)
-                        endRow, endCol = random.choice(endPositions)
+                        endRow, endCol = self.area.getDestination(self.endPointsNum)
 
                         # add info into channel
                         self.trainingSets[index, currentTime, startRow, startCol, 0] = 1  # launching one uav
@@ -140,7 +87,7 @@ if __name__ == '__main__':
     startTimeIter = time.time()
     # s = Simulator(iteration=2, row=4, column=4, time=5, startPointsNum=3, endPointsNum=3)
     # s = Simulator(iteration=10000, row=16, column=16, time=60, startPointsNum=15, endPointsNum=15)
-    s = Simulator(startPointsNum=12, endPointsNum=12,iteration=10, row=32, column=32)
+    s = Simulator(startPointsNum=12, endPointsNum=12,iteration=3, row=32, column=32)
     s.generate()
 
     # logging.info('Finished')
