@@ -67,7 +67,9 @@ class Areas:
 
     def getLaunchPoint(self, n, low=0, high=1):
         np.random.shuffle(self.la)
-        if n < 0:
+        if n == 'random':
+            n = int(np.round(np.random.uniform(0, len(self.la))))
+        if n < 0 or n == 'all':
             n = len(self.la)
         result = []
         for n in range(n):
@@ -78,7 +80,9 @@ class Areas:
     
     def getDestination(self, n):
         np.random.shuffle(self.da)
-        if n < 0:
+        if n == 'random':
+            n = int(np.round(np.random.uniform(0, len(self.da))))
+        if n < 0 or n == 'all':
             return self.da
         result = []
         for n in range(n):
@@ -88,7 +92,9 @@ class Areas:
     
     def getBlockPoint(self, n):
         np.random.shuffle(self.ba)
-        if n < 0:
+        if n == 'random':
+            n = int(np.round(np.random.uniform(0, len(self.ba))))
+        if n < 0 or n == 'all':
             return self.ba
         result = []
         for n in range(n):
@@ -101,9 +107,10 @@ class Areas:
         plt.savefig("result.png")
 
 a = Areas()
-lp = a.getLaunchPoint(-1)
-dp = a.getDestination(-1)
-bp = a.getBlockPoint(-1)
+lp = a.getLaunchPoint('random')
+dp = a.getDestination('random')
+bp = a.getBlockPoint('random')
 
-
-
+print(lp)
+print(dp)
+print(bp)
