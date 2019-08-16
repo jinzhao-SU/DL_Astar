@@ -6,6 +6,7 @@ from Grid import Grid
 from Node import Node
 from Area import Area
 import time
+import os
 
 class Simulator:
     def __init__(self,startPointsNum,endPointsNum ,iteration=1, gridTime = 150,simTime = 90, row=0, column=0,):
@@ -32,7 +33,7 @@ class Simulator:
             logging.info('At {0} iteration'.format(index))
             grid = Grid(time=self.gridTime, row=self.row, col=self.column, blocks=self.blocks)
             grid.generateBlock()
-            
+
             # startPoints = self.choosePoints(self.startPointsNum)
             # startPositions = list(map(lambda x: (x // self.column, x % self.column), startPoints))
             # endPoints = self.choosePoints(self.endPointsNum)
@@ -79,7 +80,8 @@ class Simulator:
 if __name__ == '__main__':
     logger = logging.getLogger()
     logger.disabled = False
-
+    if os.path.exists("log.txt"):
+        os.remove("log.txt")
     logging.basicConfig(filename='log.txt', format='%(levelname)s:%(message)s', level=logging.INFO)
 
     logging.info('Started')
