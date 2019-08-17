@@ -6,10 +6,10 @@ import matplotlib.pyplot as plt
 
 launchingArea = [
     [
-        [15, 0],
-        [15, 2],
-        [16, 0],
-        [16, 2],
+        [15, 1],
+        [15, 3],
+        [17, 1],
+        [17, 3],
     ],
     [
         [7, 10],
@@ -27,10 +27,10 @@ launchingArea = [
 
 destinationArea = [
     [
+        [29, 9],
+        [29, 10],
         [30, 9],
         [30, 10],
-        [31, 9],
-        [31, 10],
     ],
     [
         [7, 22],
@@ -39,19 +39,19 @@ destinationArea = [
         [9, 25],
     ],
     [
-        [30, 9],
-        [30, 10],
-        [31, 9],
-        [31, 10],
+        [25, 25],
+        [25, 26],
+        [26, 25],
+        [26, 26],
     ]
 ]
 
 blockArea = [
-    [15, 3],
+    [15, 5],
     [16, 4],
     [8, 8],
     [8, 12],
-    [25, 26],
+    [25, 27],
     [23, 27],
     [15, 15],
     [13, 15],
@@ -98,15 +98,23 @@ class Area:
             result.append(point)
         return np.array(result)
     
-    def image(self):
-        plt.plot(self.la)
-        plt.savefig("result.png")
+    def image(self, size, save=False):
+        fig, axs = plt.subplots(1, 3, figsize=(10, 3))
+        plt.gray()
+        for ax, title, area in zip(axs, ['launch', 'destination', 'block'], [self.la, self.da, self.ba]):
+            A = np.zeros((size,size))
+            for p in area:
+                A[p[0], p[1]] = 1
+            ax.imshow(A)
+            ax.set_title(title)
+            ax.get_xaxis().set_visible(False)
+            ax.get_yaxis().set_visible(True)
+        if save == True:
+            plt.savefig("img/result.png")
 
 a = Area()
-lp = a.getLaunchPoint('random')
-dp = a.getDestination('random')
-bp = a.getBlockPoint('random')
+# lp = a.getLaunchPoint('random')
+# dp = a.getDestination('random')
+# bp = a.getBlockPoint('random')
 
-print(lp)
-print(dp)
-print(bp)
+a.image(32)
