@@ -7,9 +7,9 @@ class Grid:
         self.rows = row
         self.cols = col
         self.grid = [[[Node( t,y ,x ) for x in range(self.cols)] for y in range(self.rows)] for t in range(self.time)]
-        self.movement_col = (1,-1,0,0)
-        self.movement_row = (0,0,1,-1)
-        self.movement_time = (1,1,1,1)
+        self.movement_col = (1,-1,0,0,0)
+        self.movement_row = (0,0,1,-1,0)
+        self.movement_time = (1,1,1,1,1)
         self.blocks = blocks
         self.openSet = [[False for x in range(self.cols)] for y in range(self.rows)]
         self.closeSet = [[False for x in range(self.cols)] for y in range(self.rows)]

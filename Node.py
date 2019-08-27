@@ -6,14 +6,21 @@ class Node:
         self.t = t
         self.hCost = 0
         self.gCost = 0
-        self.parentNode = None
+
+        self.tCost = 0
+        self.parentNode = self
         # self.closed = False
         # self.opened = False
         self.walkable = True
 
     def __lt__(self, other):
         if self.fCost == other.fCost:
-            return self.gCost < other.gCost
+            return self.hCost < other.hCost
+            if self.gCost == other.gCost:
+                return self.hCost < other.hCost
+            if self.hCost == other.hCost:
+                return self.tCost < other.tCost
+            return self.hCost + self.tCost < other.hCost+ other.tCost
         return self.fCost < other.fCost
 
     @property
@@ -35,9 +42,18 @@ class Node:
         self._gCost = value
 
     @property
+    def tCost(self):
+        #print("return hCost")
+        return self._tCost
+    @tCost.setter
+    def tCost(self, value):
+        #print("set Cost")
+        self._tCost = value
+
+    @property
     def fCost(self):
         #print("return fCost")
-        return self._gCost + self._hCost
+        return self._gCost + self._hCost + self._tCost
 
 
 
@@ -59,7 +75,7 @@ if __name__ == '__main__':
     q.put(node_2)
     q.put(node_3)
     while not q.empty():
-        print(q.get().x)
+        print(q.get().fCost)
 
 
 
