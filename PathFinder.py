@@ -69,3 +69,33 @@ class PathFinder:
         #print(len(path))
         return path
 
+    def mht(self):
+        if self.end_y >= self.startNode.y:
+            step = 1
+            for y in range(self.startNode.y, self.end_y+1):
+                self.gridMap[self.startNode.t+step][y][self.startNode.x] += 1
+                step += 1
+        else:
+            step = 1
+            for y in range(self.startNode.y, self.end_y-1, -1):
+                self.gridMap[self.startNode.t+step][y][self.startNode.x] += 1
+                step += 1
+        if self.end_x <= self.startNode.x:
+            step = 1
+            for x in range(self.startNode.x, self.end_x+1):
+                self.gridMap[self.startNode.t+step][self.end_y][x] += 1
+                step += 1
+        else:
+            step = 1
+            for x in range(self.startNode.x, self.end_x-1, -1):
+                self.gridMap[self.startNode.t+step][self.end_y][x] += 1
+                step += 1
+
+
+    def showOnFly(self,timeStamp):
+        result = []
+        for y in range(len(self.gridMap[timeStamp])):
+            for x in range(len(self.gridMap[timeStamp][y])):
+                if self.gridMap[timeStamp][y][x] == 1:
+                    result.append(Node(timeStamp, y, x))
+        return result
